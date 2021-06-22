@@ -8,5 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="ethereum-voting" />
+    <orderEntry type="module" module-name="chapter4" />
   </component>
 </module>

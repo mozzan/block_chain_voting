@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../ethereum_voting_dapp/chapter4/.idea/chapter4.iml" filepath="$PROJECT_DIR$/../ethereum_voting_dapp/chapter4/.idea/chapter4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ethereum-voting/.idea/ethereum-voting.iml" filepath="$PROJECT_DIR$/../ethereum-voting/.idea/ethereum-voting.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/restaurants_rating.iml" filepath="$PROJECT_DIR$/.idea/restaurants_rating.iml" />
     </modules>
   </component>
