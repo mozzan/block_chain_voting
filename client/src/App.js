@@ -3,13 +3,16 @@ import SimpleStorage from "./contracts/SimpleStorage.json";
 import Voting from "./contracts/Voting.json";
 import getWeb3 from "./getWeb3";
 import ShowOptions from "./ShowOptions";
+import ProposalPage from "./ProposalPage";
 import sigUtil from 'eth-sig-util';
 
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, options:
-      [{name: 'Hillary Clinton', vote: 0}, { name: 'Donald Trump', vote: 0}]};
+  // state = { storageValue: 0, web3: null, accounts: null, contract: null, options:
+  //     [{name: 'Hillary Clinton', vote: 0}, { name: 'Donald Trump', vote: 0}]};
+
+  state = { storageValue: 0, web3: null, accounts: null, contract: null};
 
   componentDidMount = async () => {
     try {
@@ -40,27 +43,12 @@ class App extends Component {
   };
 
   init = async () => {
-    const { web3, accounts, contract } = this.state;
 
-    // // Stores a given value, 5 by default.
-    // await contract.methods.set(5).send({ from: accounts[0] });
-    //
-    // // Get the value from the contract to prove it worked.
-    // const response = await contract.methods.get().call();
-    let that = this;
-    const options = this.state.options;
-    options.map(function(option) {
-      contract.methods.totalVotesFor(web3.utils.asciiToHex(option.name)).call().then(function(count) {
-        debugger
-        let target = options.find(element => element.name == option.name);
-        target.vote = count;
-        that.setState({ options: options });
-      })
-    });
   };
 
   handleVote = async (option) => {
     const { web3, accounts, contract } = this.state;
+    const that = this;
 
     let msgParams = [
       {
@@ -84,7 +72,25 @@ class App extends Component {
         alert(result.error.message)
       }
       const optionName = web3.utils.asciiToHex(option);
-      contract.methods.voteForCandidate(optionName, from, result.result).send({ from: from })
+      contract.methods.voteForCandidate(optionName, from, result.result).send({ from: from }).then(function() {
+        that.setState( { title: that.state.title + ' -' });
+      })
+    })
+  }
+
+  submit = async (proposalName, options) => {
+    const { web3, accounts, contract } = this.state;
+    const that = this;
+
+    const mOptions = options.map(function(option) {
+      return web3.utils.asciiToHex(option);
+    })
+
+    contract.methods.addProposal(web3.utils.asciiToHex(proposalName), mOptions).send({ from: accounts[0] }).then(function() {
+      const mOptions = options.map(function(option) {
+        return { name: option, vote: 0}
+      })
+      that.setState( { title: proposalName, options: mOptions } )
     })
   }
 
@@ -92,9 +98,15 @@ class App extends Component {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
-    return (
-      <ShowOptions vote={this.handleVote} options={this.state.options}></ShowOptions>
-    );
+    if(this.state.options) {
+      return (
+        <ShowOptions title={this.state.title} vote={this.handleVote} options={this.state.options} web3={this.state.web3} contract={this.state.contract}></ShowOptions>
+      )
+    } else {
+      return (
+        <ProposalPage submit={this.submit}></ProposalPage>
+      )
+    }
   }
 }
 

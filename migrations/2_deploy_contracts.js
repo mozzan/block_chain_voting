@@ -11,7 +11,7 @@ const hashMap = options.map(function(option) {
 module.exports = function(deployer) {
   deployer.deploy(ECRecovery);
   deployer.link(ECRecovery, Voting);
-  deployer.deploy(Voting, options, hashMap);
+  deployer.deploy(Voting);
 };
 
 // var SimpleStorage = artifacts.require("./SimpleStorage.sol");

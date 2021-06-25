@@ -4,6 +4,21 @@ export class ShowOptions extends Component {
   handleChange = (option) => {
     this.props.vote(option)
   }
+  componentDidUpdate = async () => {
+    const { web3, contract } = this.props;
+
+    let that = this;
+    const options = this.props.options;
+
+    options.map(function(option) {
+      contract.methods.totalVotesFor(web3.utils.asciiToHex(option.name)).call().then(function(count) {
+        debugger;
+        let target = options.find(element => element.name == option.name);
+        target.vote = count;
+        that.setState({ options: options });
+      })
+    });
+  }
   render(){
     let optionList = this.props.options.map((option, i)=>
       <tr key={i}>
@@ -17,7 +32,7 @@ export class ShowOptions extends Component {
     }
     return(
       <div style={style}>
-        <h3>投票候選人之以太坊：Ethereum, ReactJS</h3>
+        <h3>{ this.props.title }</h3>
         <hr />
         <Table striped bordered condensed hover>
           <thead>
